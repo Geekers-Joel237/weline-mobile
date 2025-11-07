@@ -1,97 +1,110 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
 
-# Getting Started
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+# WelineMobile - Client Mobile
 
-## Step 1: Start Metro
+Ce dépôt contient le code source du client mobile pour Weline, développé en React Native. Cette application est le point d'entrée pour les utilisateurs finaux souhaitant s'inscrire, se connecter et gérer leur position dans les files d'attente virtuelles.
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
+## Stack Technique
 
-To start the Metro dev server, run the following command from the root of your React Native project:
+  - **Framework :** React Native
+  - **Langage :** JavaScript (avec support TypeScript)
+  - **Navigation :** React Navigation
+  - **Client API :** Axios
+  - **Stockage Sécurisé :** React Native Keychain
+  - **Plateforme Cible (MVP) :** Android
 
-```sh
-# Using npm
-npm start
+## Prérequis
 
-# OR using Yarn
-yarn start
+Avant de pouvoir lancer le projet, il est **impératif** d'avoir un environnement de développement correctement configuré. Suivez le guide officiel de React Native (**React Native CLI Quickstart** pour **Android**).
+
+Les points de configuration critiques sont :
+
+  - **Node.js** (version LTS) & npm
+  - **JDK (Java Development Kit) :** **Version 17 impérativement.** Les versions plus récentes comme JDK 21 ne sont pas encore supportées par la chaîne de compilation actuelle de React Native. Nous recommandons [Temurin 17 (LTS)](https://adoptium.net/temurin/releases/?version=17).
+  - **Android Studio :** Requis pour l'installation du SDK Android et la gestion des émulateurs.
+  - **Variables d'Environnement :**
+      - `ANDROID_HOME` : Doit pointer vers le dossier de votre SDK Android (ex: `C:\Users\VOTRE_NOM\AppData\Local\Android\Sdk`).
+      - `JAVA_HOME` : Doit pointer vers la racine de votre installation de **JDK 17** (ex: `C:\Program Files\Java\jdk-17`).
+
+## Installation & Lancement
+
+1.  **Cloner le dépôt :**
+
+    ```bash
+    git clone [URL_DE_VOTRE_DEPOT_MOBILE]
+    cd WelineMobile
+    ```
+
+2.  **Installer les dépendances JavaScript :**
+
+    ```bash
+    npm install
+    ```
+
+3.  **Lancer le Backend :**
+    Cette application mobile a besoin du backend pour fonctionner. Assurez-vous que le projet `weline-backend` est en cours d'exécution via Docker.
+
+    ```bash
+    # Dans le dossier du projet backend
+    docker-compose up
+    ```
+
+4.  **Configurer l'URL de l'API :**
+    L'application mobile doit connaître l'adresse IP de votre machine pour communiquer avec le backend Docker.
+
+      - Trouvez votre adresse IP locale (sur Windows, ouvrez CMD et tapez `ipconfig`).
+      - Ouvrez le fichier `src/api/client.js`.
+      - Modifiez la constante `YOUR_LOCAL_IP` avec votre adresse.
+
+    <!-- end list -->
+
+    ```javascript
+    // src/api/client.js
+    const YOUR_LOCAL_IP = '172.25.2.80'; // <-- Mettez votre IP ici
+    const BASE_URL = `http://${YOUR_LOCAL_IP}:8088/api/v1`; // Assurez-vous que le port est correct (ex: 8088)
+    ```
+
+5.  **Lancer l'application sur Android :**
+    Assurez-vous qu'un émulateur est lancé ou qu'un téléphone est connecté.
+
+    ```bash
+    npx react-native run-android
+    ```
+
+## Structure du Projet
+
+Le code est organisé dans le dossier `/src` de la manière suivante pour une meilleure maintenabilité :
+
+```
+/src
+├── api/          # Client API (Axios), intercepteurs
+├── assets/       # Images, polices
+├── components/   # Composants UI réutilisables (Bouton, Champ de saisie...)
+├── contexts/     # Contexts React (AuthContext pour la gestion de session)
+├── navigation/   # Piles de navigation (AuthStack, AppStack)
+├── screens/      # Écrans principaux (LoginScreen, OTPScreen, HomeScreen...)
+└── services/     # Logique non-UI (SecureStorage pour le stockage sécurisé)
 ```
 
-## Step 2: Build and run your app
+## Outils de Débogage
 
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
+Pendant que l'application tourne sur l'émulateur :
 
-### Android
+  - **Ouvrir le Menu Développeur :** Appuyez sur `Ctrl + M`.
+  - **Recharger l'application :** Appuyez deux fois sur la touche `R` (`R`, `R`).
+  - **Débogueur JavaScript (Console & Points d'arrêt) :**
+    1.  Ouvrez le Menu Développeur et sélectionnez `Debug`.
+    2.  Un onglet s'ouvre dans votre navigateur.
+    3.  Appuyez sur `F12` pour ouvrir les outils de développement et allez sur l'onglet `Console` pour voir vos `console.log`.
+  - **Inspecteur d'UI (React DevTools) :**
+    1.  Ouvrez un nouveau terminal à la racine du projet.
+    2.  Lancez la commande : `npx react-native-devtools`.
 
-```sh
-# Using npm
-npm run android
+## Roadmap du MVP
 
-# OR using Yarn
-yarn android
-```
+  - [x] **Epic 1 : Fondations du Projet & Infrastructure** (Côté Backend)
+  - [x] **Epic 2 : Onboarding & Authentification des Utilisateurs**
+  - [ ] **Epic 3 : Le Cœur de la File d'Attente (Expérience Utilisateur)**
+  - [ ] **Epic 4 : Le Dashboard de l'Agent**
 
-### iOS
-
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
-
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
-
-```sh
-bundle install
-```
-
-Then, and every time you update your native dependencies, run:
-
-```sh
-bundle exec pod install
-```
-
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
-
-```sh
-# Using npm
-npm run ios
-
-# OR using Yarn
-yarn ios
-```
-
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
-
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
-
-## Step 3: Modify your app
-
-Now that you have successfully run the app, let's make changes!
-
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
-
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
-
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
-
-## Congratulations! :tada:
-
-You've successfully run and modified your React Native App. :partying_face:
-
-### Now what?
-
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
-
-# Troubleshooting
-
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+-----
